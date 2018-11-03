@@ -1,11 +1,14 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class Renderer extends JFrame {
-    private int width = 1260 / 2;
-    private int height = 1360 / 2;
+    private int width = 1260;
+    private int height = 1360;
     private Traffic traffic = new Traffic();
-    ImageIcon imageIcon = new ImageIcon("memes.png");
 
     public Renderer() {
         setSize(width, height);
@@ -20,12 +23,18 @@ public class Renderer extends JFrame {
     }
 
     public void paint(Graphics g) {
-        g.drawImage(imageIcon.getImage(), 0, 0, this);
+        try {
+            g.drawImage(ImageIO.read(new File("images/memes.png")), 0, 0, this);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+
         traffic.addCar(200, 300);
         traffic.addCar(100, 200);
         for (Position pos : traffic.getPositions())
         {
-            drawCircleWithCenter(g, pos.getXPos(), pos.getYPos(), 200);
+            drawCircleWithCenter(g, pos.getXPos(), pos.getYPos(), 10);
         }
     }
 
