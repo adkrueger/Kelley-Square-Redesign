@@ -1,3 +1,5 @@
+import javafx.geometry.Pos;
+
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -5,8 +7,9 @@ import java.awt.Point;
 import javax.swing.JFrame;
 
 public class Renderer extends JFrame {
-    private int width = 1260;
-    private int height = 1360;
+    private int width = 1260 / 2;
+    private int height = 1360 / 2;
+    private Traffic traffic = new Traffic();
 
     public Renderer() {
         setSize(width, height);
@@ -21,11 +24,12 @@ public class Renderer extends JFrame {
     }
 
     public void paint(Graphics g) {
-        // Circular Surface
-        drawCircleWithCenter(g, width / 2, height / 2, 200);
-        Point center = new Point();
-        center.x = 200;
-        center.y = 400;
+        traffic.addCar(200, 300);
+        traffic.addCar(100, 200);
+        for (Position pos : traffic.getPositions())
+        {
+            drawCircleWithCenter(g, pos.getXPos(), pos.getYPos(), 200);
+        }
     }
 
     void drawCircleWithCenter(Graphics g, int x, int y, int radius) {

@@ -1,17 +1,22 @@
 public class Vehicle extends Traffic {
-    int _xPos, _yPos, _priority;
+    int _priority;
+    Position pos = new Position();
 
     public Vehicle(int xPos, int yPos, int priority) {
-        _xPos = xPos;
-        _yPos = yPos;
+        pos.setXPos(xPos);
+        pos.setYPos(yPos);
         _priority = priority;
     }
 
-    public int getXPos() { return _xPos; }
-    public void setXPos(int newXPos) { _xPos = newXPos; }
+    public Position getPos()
+    {
+        return pos;
+    }
 
-    public int getYPos() { return _yPos; }
-    public void setYPos(int newYPos) { _yPos = newYPos; }
+    public void setPos(int x, int y) {
+        pos.setXPos(x);
+        pos.setYPos(y);
+    }
 
     public int getPriority() { return _priority; }
     public void setPriority(int newPriority) { _priority = newPriority; }
