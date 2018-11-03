@@ -1,10 +1,13 @@
-import javafx.geometry.Pos;
-
 import java.util.ArrayList;
 
 public class Traffic {
     private ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+    private ArrayList<VehicleCircle> vCircles = new ArrayList<VehicleCircle>();
     private int numVehicles;
+
+    public Traffic() {
+        addCar(512, 540, 10);
+    }
 
     /**
      * Tests whether or not the vehicle will collide with another vehicle
@@ -14,20 +17,24 @@ public class Traffic {
         return false;
     }
 
-    //public ArrayList<>
-
-    public ArrayList<Position> getPositions() {
-        ArrayList<Position> positions = new ArrayList<Position>();
-        for (Vehicle vehicle : vehicles) {
-            positions.add(vehicle.getPos());
-        }
-        return positions;
-    }
-
-    public void addCar(int x, int y) {
-        Vehicle car = new Vehicle(x, y, 1);
+    public void addCar(int x, int y, int priority) {
+        Vehicle car = new Vehicle(x, y, priority);
         if(!vehicles.contains(car)) {
             vehicles.add(car);
+        }
+        if(!vCircles.contains(car.getVCircle())) {
+            vCircles.add(car.getVCircle());
+        }
+    }
+
+    public ArrayList<VehicleCircle> getVCircles() {
+        return vCircles;
+    }
+
+    public void update() {
+        for (Vehicle vehicle : vehicles)
+        {
+            vehicle.moveForward();
         }
     }
 

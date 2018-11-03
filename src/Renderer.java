@@ -1,45 +1,103 @@
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class Renderer extends JFrame {
-    private int width = 1260;
-    private int height = 1360;
-    private Traffic traffic = new Traffic();
+public class Renderer extends JPanel implements Runnable {
+    private final int width = 1260;
+    private final int height = 1360;
+
+    private Image background;
+    private Thread animator;
+
+    private static Traffic traffic = new Traffic();
 
     public Renderer() {
-        setSize(width, height);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        initRenderer();
     }
 
-    public static void main(String args[]) {
-        new Renderer();
+    private void loadImage() {
+        ImageIcon ii = new ImageIcon("images/memes.png");
+        background = ii.getImage();
     }
 
-    public void paint(Graphics g) {
+    private void initRenderer() {
+        setBackground(Color.black);
+        setPreferredSize(new Dimension(width, height));
+
+        loadImage();
+    }
+
+    private void cycle() {
+        traffic.update();
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+
+        animator = new Thread(this);
+        animator.start();
+    }
+
+    @Override
+    public void run() {
+
+        long beforeTime, timeDiff, sleep;
+
+        beforeTime = System.currentTimeMillis();
+
+        while (true) {
+
+            cycle();
+            repaint();
+
+            timeDiff = System.currentTimeMillis() - beforeTime;
+            sleep = 25 - timeDiff;
+
+            if (sleep < 0) {
+                sleep = 2;
+            }
+
+            try {
+                Thread.sleep(sleep);
+            } catch (InterruptedException e) {
+
+                String msg = String.format("Thread interrupted: %s", e.getMessage());
+
+                JOptionPane.showMessageDialog(this, msg, "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            beforeTime = System.currentTimeMillis();
+        }
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        drawTraffic(g);
+    }
+
+
+    public void drawTraffic(Graphics g) {
+        g.drawImage(background, 0, 0, this);
         try {
-            g.drawImage(ImageIO.read(new File("images/memes.png")), 0, 0, this);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(0);
+            for (VehicleCircle vehicleCircle : traffic.getVCircles()) {
+                drawCircleWithCenter(g, vehicleCircle.getXPos(), vehicleCircle.getYPos(), vehicleCircle.getRadius(), vehicleCircle.getColor());
+            }
         }
-
-        traffic.addCar(200, 300);
-        traffic.addCar(100, 200);
-        for (Position pos : traffic.getPositions())
+        catch (Exception ConcurrentModificationException)
         {
-            drawCircleWithCenter(g, pos.getXPos(), pos.getYPos(), 10);
+            System.out.println("Tried to modify two things together...");
         }
     }
 
-    void drawCircleWithCenter(Graphics g, int x, int y, int radius) {
-        g.setColor(Color.BLACK);
+    private void drawCircleWithCenter(Graphics g, int x, int y, int radius, Color color) {
+        g.setColor(color);
         // g.drawOval(x - radius, y - radius, 2 * radius, 2 * radius);
         g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
     }
