@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.File;
@@ -8,8 +7,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class Renderer extends JPanel implements Runnable {
-    private final int WIDTH = 1260;
-    private final int HEIGHT = 1360;
+    private final float SCALE = 70;
+    private final float scaleConv = (SCALE / 100);
+    private final int width = (int) (1260 * scaleConv);
+    private final int height = (int) (1360 * scaleConv);
 
     private Image background;
     private Thread animator;
@@ -21,14 +22,14 @@ public class Renderer extends JPanel implements Runnable {
     }
 
     private void loadImage() {
-        ImageIcon ii = new ImageIcon("images/memes.png");
-        background = ii.getImage();
+        ImageIcon ii = new ImageIcon("images/kelley.png");
+        background = ii.getImage().getScaledInstance(width, height, Image.SCALE_FAST);
     }
 
     private void initRenderer() {
         setBackground(Color.black);
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
-
+        setPreferredSize(new Dimension(width, height));
+        //TODO: Implement initNodes();
         loadImage();
     }
 
@@ -80,15 +81,17 @@ public class Renderer extends JPanel implements Runnable {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.drawImage(background, 0, 0, this);
         drawTraffic(g);
     }
 
 
     public void drawTraffic(Graphics g) {
-        g.drawImage(background, 0, 0, this);
         try {
             for (VehicleCircle vehicleCircle : traffic.getVCircles()) {
-                drawCircleWithCenter(g, vehicleCircle.getXPos(), vehicleCircle.getYPos(), vehicleCircle.getRadius(), vehicleCircle.getColor());
+                int x = (int) (vehicleCircle.getXPos() * scaleConv);
+                int y = (int) (vehicleCircle.getYPos() * scaleConv);
+                drawCircleWithCenter(g, x, y, vehicleCircle.getRadius(), vehicleCircle.getColor());
             }
         }
         catch (Exception ConcurrentModificationException)

@@ -28,10 +28,12 @@ public class Vehicle{
     }
 
     public void moveForward() {
+        /*
         progress += 0.1f;
         int x = oCircle.getXPos() + (int) (75 * Math.sin(progress));
         int y = oCircle.getYPos() + (int) (75 * Math.cos(progress));
         setVCircle(x, y, vCircle.getColor());
+        */
     }
 
     public float getProgress() {
