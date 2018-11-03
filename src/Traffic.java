@@ -32,8 +32,7 @@ public class Traffic {
     }
 
     public void update() {
-        for (Vehicle vehicle : vehicles)
-        {
+        for (Vehicle vehicle : vehicles) {
             vehicle.moveForward();
         }
     }

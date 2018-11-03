@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.File;
@@ -7,8 +8,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class Renderer extends JPanel implements Runnable {
-    private final int width = 1260;
-    private final int height = 1360;
+    private final int WIDTH = 1260;
+    private final int HEIGHT = 1360;
 
     private Image background;
     private Thread animator;
@@ -26,7 +27,7 @@ public class Renderer extends JPanel implements Runnable {
 
     private void initRenderer() {
         setBackground(Color.black);
-        setPreferredSize(new Dimension(width, height));
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         loadImage();
     }
