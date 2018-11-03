@@ -1,15 +1,11 @@
-import javafx.geometry.Pos;
-
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Point;
-import javax.swing.JFrame;
+import java.awt.*;
+import javax.swing.*;
 
 public class Renderer extends JFrame {
     private int width = 1260 / 2;
     private int height = 1360 / 2;
     private Traffic traffic = new Traffic();
+    ImageIcon imageIcon = new ImageIcon("memes.png");
 
     public Renderer() {
         setSize(width, height);
@@ -24,6 +20,7 @@ public class Renderer extends JFrame {
     }
 
     public void paint(Graphics g) {
+        g.drawImage(imageIcon.getImage(), 0, 0, this);
         traffic.addCar(200, 300);
         traffic.addCar(100, 200);
         for (Position pos : traffic.getPositions())
