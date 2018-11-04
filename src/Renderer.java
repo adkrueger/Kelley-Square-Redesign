@@ -1,97 +1,54 @@
 import java.awt.*;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
+import java.util.ArrayList;
 import javax.swing.*;
 
-public class Renderer extends JPanel implements Runnable {
+public class Renderer extends JPanel {
     private final float SCALE = 70;
+    private final int RADIUS = 20;
     private final float scaleConv = (SCALE / 100);
     private final int width = (int) (1260 * scaleConv);
     private final int height = (int) (1360 * scaleConv);
 
+    // CHANGE THESE
+    private int start = 0;
+    private int end = 18;
+
     private Image background;
     private Thread animator;
+    private NodeSystem nodeSystem = new NodeSystem();
 
-    private static Traffic traffic = new Traffic();
-
-    public Renderer() {
-        initRenderer();
+    public static void main(String[] args) {
+            JFrame jFrame = new JFrame("Kelley Square Demo");
+            Renderer renderer = new Renderer();
+            jFrame.setSize(renderer.width + 30, renderer.height + 70);
+            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jFrame.getContentPane().add(renderer);
+            jFrame.setVisible(true);
     }
 
-    private void loadImage() {
+    public void paint(Graphics g) {
         ImageIcon ii = new ImageIcon("images/kelley.png");
-        background = ii.getImage().getScaledInstance(width, height, Image.SCALE_FAST);
-    }
-
-    private void initRenderer() {
-        setBackground(Color.black);
-        setPreferredSize(new Dimension(width, height));
-        //TODO: Implement initNodes();
-        loadImage();
-    }
-
-    private void cycle() {
-        traffic.update();
-    }
-
-    @Override
-    public void addNotify() {
-        super.addNotify();
-
-        animator = new Thread(this);
-        animator.start();
-    }
-
-    @Override
-    public void run() {
-
-        long beforeTime, timeDiff, sleep;
-
-        beforeTime = System.currentTimeMillis();
-
-        while (true) {
-
-            cycle();
-            repaint();
-
-            timeDiff = System.currentTimeMillis() - beforeTime;
-            sleep = 25 - timeDiff;
-
-            if (sleep < 0) {
-                sleep = 2;
-            }
-
-            try {
-                Thread.sleep(sleep);
-            } catch (InterruptedException e) {
-
-                String msg = String.format("Thread interrupted: %s", e.getMessage());
-
-                JOptionPane.showMessageDialog(this, msg, "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-
-            beforeTime = System.currentTimeMillis();
-        }
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(background, 0, 0, this);
-        drawTraffic(g);
-    }
-
-
-    public void drawTraffic(Graphics g) {
+        ii.setImage(ii.getImage().getScaledInstance(width, height, Image.SCALE_FAST));
+        g.drawImage(ii.getImage(), 0, 0, this);
+        g.setFont(g.getFont().deriveFont(20.0f));
         try {
-            for (VehicleCircle vehicleCircle : traffic.getVCircles()) {
-                int x = (int) (vehicleCircle.getXPos() * scaleConv);
-                int y = (int) (vehicleCircle.getYPos() * scaleConv);
-                drawCircleWithCenter(g, x, y, vehicleCircle.getRadius(), vehicleCircle.getColor());
+            for (Circle circle : nodeSystem.getCircles()) {
+                int x = (int) (circle.getXPos() * scaleConv);
+                int y = (int) (circle.getYPos() * scaleConv);
+                drawCircleWithCenter(g, x, y, RADIUS, circle.getColor());
+                g.setColor(Color.black);
+                g.drawString(circle.getName(), x, y);
+            }
+            Node startNode = nodeSystem.getNodes().get(start);
+            Node endNode = nodeSystem.getNodes().get(end);
+            ArrayList<Node> nodePath = startNode.getPath(startNode, endNode, new ArrayList<Node>());
+            for (int i = 0; i < nodePath.size() - 1; i++)
+            {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setColor(Color.blue);
+                g2d.setStroke(new BasicStroke(6.0F));
+                g2d.drawLine((int) (nodePath.get(i).getX() * scaleConv),(int) (nodePath.get(i).getY() * scaleConv),
+                        (int) (nodePath.get(i + 1).getX() * scaleConv),(int) (nodePath.get(i + 1).getY() * scaleConv));
             }
         }
         catch (Exception ConcurrentModificationException)
@@ -102,7 +59,6 @@ public class Renderer extends JPanel implements Runnable {
 
     private void drawCircleWithCenter(Graphics g, int x, int y, int radius, Color color) {
         g.setColor(color);
-        // g.drawOval(x - radius, y - radius, 2 * radius, 2 * radius);
         g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
     }
 }

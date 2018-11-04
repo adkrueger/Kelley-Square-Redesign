@@ -1,9 +1,9 @@
 import java.awt.*;
 
-public class VehicleCircle {
+public class Circle {
     private int _xPos;
     private int _yPos;
-    private final int _radius = 10;
+    private String name;
     private Color _color;
 
     public void setXPos(int newX) {
@@ -14,16 +14,20 @@ public class VehicleCircle {
         return _xPos;
     }
 
+    public void setName(String newName) {
+        name = newName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public void setYPos(int newY) {
         _yPos = newY;
     }
 
     public int getYPos() {
         return _yPos;
-    }
-
-    public int getRadius() {
-        return _radius;
     }
 
     public void setColor(Color newColor) {
