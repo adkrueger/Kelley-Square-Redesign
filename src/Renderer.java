@@ -10,8 +10,8 @@ public class Renderer extends JPanel {
     private final int height = (int) (1360 * scaleConv);
 
     // CHANGE THESE
-    private int start = 0;
-    private int end = 18;
+    private int start = 12;
+    private int end = 6;
 
     private Image background;
     private Thread animator;

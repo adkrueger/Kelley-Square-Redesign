@@ -103,8 +103,8 @@ public class Node {
         node11.addNodeToExit(node13);
         node13.addNodeToExit(node14);
         node13.addNodeToExit(node15);
-        node15.addNodeToExit(node16);
         node15.addNodeToExit(node17);
+        node16.addNodeToExit(node15);
         node17.addNodeToExit(node18);
         node17.addNodeToExit(node1);
 
